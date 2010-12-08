@@ -41,7 +41,7 @@ class Strongspace::Client
     doc = JSON.parse get('/api/v1/spaces')
   end
 
-  def destroy_space(space_name)
+  def delete_space(space_name)
     doc = JSON.parse delete("/api/v1/spaces/#{escape(space_name)}").to_s
   end
 
@@ -57,7 +57,7 @@ class Strongspace::Client
     doc = JSON.parse get("/api/v1/spaces/#{escape(space_name)}/snapshots").to_s
   end
 
-  def destroy_snapshot(space_name, snapshot_name)
+  def delete_snapshot(space_name, snapshot_name)
     doc = JSON.parse delete("/api/v1/spaces/#{escape(space_name)}/snapshots/#{escape(snapshot_name)}").to_s
   end
 

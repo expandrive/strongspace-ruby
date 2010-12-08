@@ -39,13 +39,12 @@ module Strongspace::Command
         group.command 'keys:remove <id> ',            'remove a key by id'
         group.command 'keys:clear',                   'remove all keys'
         group.space
-        group.space
         group.command 'spaces',                        'show your user\'s spaces'
         group.command 'spaces:create <space_name> [type]',        'add a new space. type => (normal,public,backup)'
-        group.command 'spaces:destroy <space_name> [type]',       'remove a space by and destroy its data'
+        group.command 'spaces:delete <space_name> [type]',       'remove a space by and destroy its data'
         group.command 'spaces:snapshots <space_name>',                        'show a space\'s snapshots'
         group.command 'spaces:create_snapshot <space_name@snapshot_name>',            'take a space of a space.'
-        group.command 'spaces:destroy_snapshot <space_name@snapshot_name>',         'remove a snapshot from a space'
+        group.command 'spaces:delete_snapshot <space_name@snapshot_name>',         'remove a snapshot from a space'
       end
     end
 

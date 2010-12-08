@@ -24,8 +24,8 @@ module Strongspace::Command
       display "Create space #{name}"
     end
 
-    def destroy
-      strongspace.destroy_space(args.first)
+    def delete
+      strongspace.delete_space(args.first)
       display "Space #{args.first} removed."
     end
 
@@ -54,10 +54,10 @@ module Strongspace::Command
       display "Created snapshot '#{args[0]}'"
     end
 
-    def destroy_snapshot
+    def delete_snapshot
       space_name, snapshot_name = args[0].split("@")
 
-      strongspace.destroy_snapshot(space_name, snapshot_name)
+      strongspace.delete_snapshot(space_name, snapshot_name)
       display "Destroyed snapshot '#{args.first}'"
     end
 
