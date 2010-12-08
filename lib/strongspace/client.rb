@@ -37,6 +37,24 @@ class Strongspace::Client
     @host = host
   end
 
+  # returns a tempfile to the loaded file
+  def download(path)
+    RestClient::Request.execute(:method => :get, :url => (@host + '/api/v1/files' + escape(path)), :user => @user, :password => @password, :raw_response => true, :headers =>  {:accept_encoding => ''}).file
+  end
+
+  def upload(file, dest_path)
+    r = resource(@host + '/api/v1/files/' + escape(dest_path[1..-1] + "/" + File.basename(file.path)))
+    r.post(:file => file)
+  end
+
+  def mkdir(path)
+    doc = post("/api/v1/files/#{escape(path[1..-1])}", :op => "mkdir")
+  end
+
+  def rm(path)
+    doc = delete("/api/v1/files/#{escape(path[1..-1])}")
+  end
+
   def spaces
     doc = JSON.parse get('/api/v1/spaces')
   end

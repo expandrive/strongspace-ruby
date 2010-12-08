@@ -52,7 +52,7 @@ module Strongspace
             begin
               return eval("Strongspace::Command::#{command.capitalize}"), :index
             rescue NameError, NoMethodError
-              return Strongspace::Command::App, command.to_sym
+              return Strongspace::Command::Base, command.to_sym
             end
           else
             begin

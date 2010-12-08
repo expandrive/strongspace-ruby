@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Strongspace::Command
   class Base
     include Strongspace::Helpers

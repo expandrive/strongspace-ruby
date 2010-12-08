@@ -33,6 +33,10 @@ module Strongspace::Command
         group.command 'help',                         'show this usage'
         group.command 'version',                      'show the gem version'
         group.space
+        group.command 'upload <local_file> <remote_path>',      'upload a file'
+        group.command 'download <remote_path>',      'download a file from Strongspace to the current directory'
+        group.command 'mkdir <remote_path>',      'create a folder on Strongspace'
+        group.command 'delete <remote_path>',      'delete a file or recursively delete a folder on Strongspace'
         group.space
         group.command 'keys',                         'show your user\'s public keys'
         group.command 'keys:add [<path to keyfile>]', 'add a public key'
