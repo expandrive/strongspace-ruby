@@ -1,4 +1,4 @@
-require 'ftools'
+require 'fileutils'
 require 'pathname'
 
 module Strongspace::Command
@@ -7,7 +7,7 @@ module Strongspace::Command
       path = Pathname.new(args.first)
       display "Downloading #{path.basename}"
       tempfile = strongspace.download(path.to_s)
-      File.move(tempfile.path, path.basename)
+      FileUtils.mv(tempfile.path, path.basename)
     end
   end
 
