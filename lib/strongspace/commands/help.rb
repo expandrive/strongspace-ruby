@@ -37,12 +37,16 @@ module Strongspace::Command
         group.command 'download <remote_path>',      'download a file from Strongspace to the current directory'
         group.command 'mkdir <remote_path>',      'create a folder on Strongspace'
         group.command 'delete <remote_path>',      'delete a file or recursively delete a folder on Strongspace'
-        group.space
+      end
+
+      group 'SSH Keys' do |group|
         group.command 'keys',                         'show your user\'s public keys'
         group.command 'keys:add [<path to keyfile>]', 'add a public key'
         group.command 'keys:remove <id> ',            'remove a key by id'
         group.command 'keys:clear',                   'remove all keys'
-        group.space
+      end
+
+      group 'Spaces' do |group|
         group.command 'spaces',                        'show your user\'s spaces'
         group.command 'spaces:create <space_name> [type]',        'add a new space. type => (normal,public,backup)'
         group.command 'spaces:delete <space_name> [type]',       'remove a space by and destroy its data'
@@ -67,7 +71,6 @@ module Strongspace::Command
 
       self.class.groups.inject(StringIO.new) do |output, group|
         output.puts "=== %s" % group.title
-        output.puts
 
         group.each do |command, description|
           if command.empty?
