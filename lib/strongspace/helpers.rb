@@ -84,3 +84,11 @@ unless String.method_defined?(:shellescape)
     end
   end
 end
+
+unless String.method_defined?(:camelize)
+  class String
+    def camelize
+      self.split(/[^a-z0-9]/i).map{|w| w.capitalize}.join
+    end
+  end
+end

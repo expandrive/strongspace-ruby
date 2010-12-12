@@ -54,7 +54,16 @@ module Strongspace::Command
         group.command 'spaces:create_snapshot <space_name@snapshot_name>',            'take a space of a space.'
         group.command 'spaces:delete_snapshot <space_name@snapshot_name>',         'remove a snapshot from a space'
       end
+
+      group 'Plugins' do |group|
+        group.command 'plugins',                      'list installed plugins'
+        group.command 'plugins:install <url>',        'install the plugin from the specified git url'
+        group.command 'plugins:uninstall <url/name>', 'remove the specified plugin'
+      end
+
     end
+
+
 
     def index
       display usage

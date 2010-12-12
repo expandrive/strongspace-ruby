@@ -1,4 +1,5 @@
 require 'strongspace/helpers'
+require 'strongspace/plugin'
 require 'strongspace/commands/base'
 
 Dir["#{File.dirname(__FILE__)}/commands/*.rb"].each { |c| require c }
@@ -13,6 +14,7 @@ module Strongspace
     class << self
 
       def run(command, args, retries=0)
+        Strongspace::Plugin.load!
         begin
           run_internal 'auth:reauthorize', args.dup if retries > 0
           run_internal(command, args.dup)
@@ -50,7 +52,7 @@ module Strongspace
         case parts.size
           when 1
             begin
-              return eval("Strongspace::Command::#{command.capitalize}"), :index
+              return eval("Strongspace::Command::#{command.camelize}"), :index
             rescue NameError, NoMethodError
               return Strongspace::Command::Base, command.to_sym
             end
