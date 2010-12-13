@@ -60,7 +60,7 @@ module Strongspace
             begin
               const = Strongspace::Command
               command = parts.pop
-              parts.each { |part| const = const.const_get(part.capitalize) }
+              parts.each { |part| const = const.const_get(part.camelize) }
               return const, command.to_sym
             rescue NameError
               raise InvalidCommand

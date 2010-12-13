@@ -12,6 +12,19 @@ module Strongspace
       RUBY_PLATFORM =~ /-darwin\d/
     end
 
+    def pids_folder
+      "#{home_directory}/.strongspace/pids"
+    end
+
+    def plugins_folder
+      Strongspace::Plugin.directory
+    end
+
+    def bin_folder
+      "#{home_directory}/.strongspace/bin"
+    end
+
+
     def display(msg, newline=true)
       if newline
         puts(msg)
@@ -67,8 +80,13 @@ module Strongspace
       date.strftime("%Y-%m-%d %H:%M %Z")
     end
 
-    def ask
-      gets.strip
+    def ask(default=nil)
+      r = gets.strip
+      if not r or r.length
+        return default
+      else
+        return r
+      end
     end
 
     def shell(cmd)
