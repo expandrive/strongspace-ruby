@@ -1,5 +1,10 @@
 module Strongspace
   module Helpers
+
+    def command_name
+      self.class.name.split("::").last
+    end
+
     def home_directory
       running_on_windows? ? ENV['USERPROFILE'] : ENV['HOME']
     end
@@ -24,6 +29,72 @@ module Strongspace
       "#{home_directory}/.strongspace/bin"
     end
 
+    def launchd_agents_folder
+      "#{home_directory}/Library/LaunchAgents"
+    end
+
+    def pid_file_path(name)
+      "#{pids_folder}/#{name}"
+    end
+
+    def pid_from_pid_file(name)
+      if File.exist?(pid_file_path(name))
+
+        f = File.open(pid_file_path(name))
+        existing_pid = Integer(f.gets)
+        f.close
+
+        return existing_pid
+      end
+
+      return nil
+    end
+
+    def process_running?(name)
+      existing_pid = pid_from_pid_file(name)
+
+      if not existing_pid
+        return false
+      end
+
+      begin
+        # This process is running
+        Process.kill(0, existing_pid)
+        return true
+      rescue Errno::EPERM
+        error "No longer have permissions to check this PID"
+      rescue Errno::ESRCH
+        # Cleanup orphaned pid file and continue on as normal
+        File.unlink(pid_file_path(name))
+      rescue
+        error "Unable to determine status for #{existing_pid} : #{$!}"
+      end
+
+      return false
+      end
+
+    def create_pid_file(name, pid)
+
+      if process_running?(name)
+        return nil
+      end
+
+      if not File.exist?(pids_folder)
+        FileUtils.mkdir_p(pids_folder)
+      end
+
+      file = File.new(pid_file_path(name), "w")
+      file.puts "#{pid}"
+      file.close
+
+      return true
+    end
+
+    def delete_pid_file(name)
+      if File.exist?(pid_file_path(name))
+        File.unlink(pid_file_path(name))
+      end
+    end
 
     def display(msg, newline=true)
       if newline
@@ -82,7 +153,7 @@ module Strongspace
 
     def ask(default=nil)
       r = gets.strip
-      if not r or r.length
+      if r.blank?
         return default
       else
         return r
