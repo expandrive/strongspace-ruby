@@ -95,6 +95,34 @@ module Strongspace
   end
 end
 
+unless Object.method_defined?(:blank?)
+  class Object
+    def blank?
+      respond_to?(:empty?) ? empty? : !self
+    end
+  end
+end
+
+unless String.method_defined?(:starts_with?)
+  class String
+    def starts_with?(str)
+      str = str.to_str
+      head = self[0, str.length]
+      head == str
+    end
+  end
+end
+
+unless String.method_defined?(:ends_with?)
+  class String
+    def ends_with?(str)
+      str = str.to_str
+      tail = self[-str.length, str.length]
+      tail == str
+    end
+  end
+end
+
 unless String.method_defined?(:shellescape)
   class String
     def shellescape
@@ -107,6 +135,14 @@ unless String.method_defined?(:camelize)
   class String
     def camelize
       self.split(/[^a-z0-9]/i).map{|w| w.capitalize}.join
+    end
+  end
+end
+
+unless String.method_defined?(:underscore)
+  class String
+    def underscore
+      self.gsub(/::/, '/').gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').gsub(/([a-z\d])([A-Z])/,'\1_\2').tr("-", "_").downcase
     end
   end
 end
