@@ -28,7 +28,8 @@ Run via command line:
 
     === SSH Keys
     keys                                              # show your user's public keys
-    keys:add [<path to keyfile>]                      # add a public key
+    keys:add [<path to keyfile>]                      # Add an public key or generate a new SSH keypair and add
+    keys:generate                                     # Generate a new SSH keypair
     keys:remove <id>                                  # remove a key by id
     keys:clear                                        # remove all keys
 
@@ -41,6 +42,10 @@ Run via command line:
     spaces:delete_snapshot <space_name@snapshot_name> # remove a snapshot from a space
 
 
+    === Plugins
+    plugins                                           # list installed plugins
+    plugins:install <url>                             # install the plugin from the specified git url
+    plugins:uninstall <url/name>                      # remove the specified plugin
 
 
 
