@@ -41,7 +41,14 @@ module Strongspace::Command
 
       group 'SSH Keys' do |group|
         group.command 'keys',                         'show your user\'s public keys'
-        group.command 'keys:add [<path to keyfile>]', 'add a public key'
+
+        if not RUBY_PLATFORM =~ /mswin32|mingw32/
+          group.command 'keys:add [<path to keyfile>]', 'Add an public key or generate a new SSH keypair and add'
+          group.command 'keys:generate',                'Generate a new SSH keypair'
+        else
+          group.command 'keys:add [<path to keyfile>]', 'Add an public key'
+        end
+
         group.command 'keys:remove <id> ',            'remove a key by id'
         group.command 'keys:clear',                   'remove all keys'
       end

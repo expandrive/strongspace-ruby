@@ -14,6 +14,12 @@ module Strongspace::Command
     end
     alias :index :list
 
+    def generate
+      `ssh-keygen`
+      return ($? == 0)
+    end
+
+
     def add
       keyfile = args.first || find_key
       key = File.read(keyfile)
@@ -39,7 +45,21 @@ module Strongspace::Command
           keyfile = "#{home_directory}/.ssh/id_#{key_type}.pub"
           return keyfile if File.exists? keyfile
         end
-        raise CommandFailed, "No ssh public key found in #{home_directory}/.ssh/id_[rd]sa.pub.  You may want to specify the full path to the keyfile."
+
+
+        display "No ssh public key found in #{home_directory}/.ssh/id_[rd]sa.pub"
+        if not running_on_windows?
+          display "  Generate a new key? [yes/no]: ", false
+          answer = ask("no")
+          if answer.downcase == "yes" or answer.downcase == "y"
+            r = Strongspace::Command.run_internal("keys:generate", nil)
+            if r
+              return find_key
+            end
+          end
+        end
+
+        raise CommandFailed, "No ssh public key available"
       end
 
       def format_key_for_display(key)
