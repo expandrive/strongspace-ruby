@@ -16,6 +16,11 @@ module Strongspace
       def run(command, args, retries=0)
         Strongspace::Plugin.load!
         begin
+          # internal-only commands cannot be be run from the command line
+          if command.index(":_")
+            raise InvalidCommand
+          end
+
           run_internal 'auth:reauthorize', args.dup if retries > 0
           run_internal(command, args.dup)
         rescue InvalidCommand

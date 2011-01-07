@@ -163,6 +163,36 @@ module Strongspace
     def shell(cmd)
       FileUtils.cd(Dir.pwd) {|d| return `#{cmd}`}
     end
+
+    def space_exist?(name)
+      strongspace.spaces["spaces"].each do |space|
+        # TODO: clean up the json returned by the strongspace API requests to simplify this iteration
+        space = space["space"]
+        return true if space["name"] == name
+      end
+      return false
+    end
+
+    def valid_space_name?(name)
+      # For now, just make sure the space name is all "word characters," i.e. [0-9A-Za-z_]
+      return false if name =~ /\W/
+      return true
+    end
+
+    def backup_space?(name)
+      space = nil
+      strongspace.spaces["spaces"].each do |s|
+        s = s["space"]
+        if s["name"] == name then
+          space = s
+          break
+        end
+      end
+      return space["type"] == "backup"
+    end
+
+
+
   end
 end
 
