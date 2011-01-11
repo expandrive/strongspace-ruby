@@ -33,7 +33,7 @@ module Strongspace::Command
         group.command 'help',                         'show this usage'
         group.command 'version',                      'show the gem version'
         group.space
-        group.command 'upload <local_file> <remote_path>',      'upload a file'
+        group.command 'upload <local_path> <remote_path>',      'upload a file'
         group.command 'download <remote_path>',      'download a file from Strongspace to the current directory'
         group.command 'mkdir <remote_path>',      'create a folder on Strongspace'
         group.command 'delete <remote_path>',      'delete a file or recursively delete a folder on Strongspace'
@@ -43,10 +43,10 @@ module Strongspace::Command
         group.command 'keys',                         'show your user\'s public keys'
 
         if not RUBY_PLATFORM =~ /mswin32|mingw32/
-          group.command 'keys:add [<path to keyfile>]', 'Add an public key or generate a new SSH keypair and add'
+          group.command 'keys:add [<keyfile_path>]', 'Add an public key or generate a new SSH keypair and add'
           group.command 'keys:generate',                'Generate a new SSH keypair'
         else
-          group.command 'keys:add [<path to keyfile>]', 'Add an public key'
+          group.command 'keys:add [<keyfile_path>]', 'Add an public key'
         end
 
         group.command 'keys:remove <id> ',            'remove a key by id'
@@ -55,11 +55,11 @@ module Strongspace::Command
 
       group 'Spaces' do |group|
         group.command 'spaces',                        'show your user\'s spaces'
-        group.command 'spaces:create <space_name> [type]',        'add a new space. type => (normal,public,backup)'
-        group.command 'spaces:delete <space_name> [type]',       'remove a space by and destroy its data'
-        group.command 'spaces:snapshots <space_name>',                        'show a space\'s snapshots'
-        group.command 'spaces:create_snapshot <space_name@snapshot_name>',            'take a space of a space.'
-        group.command 'spaces:delete_snapshot <space_name@snapshot_name>',         'remove a snapshot from a space'
+        group.command 'spaces:create <name> [type]',        'add a new space. type => (normal,public,backup)'
+        group.command 'spaces:delete <name> [type]',       'remove a space by and destroy its data'
+        group.command 'spaces:snapshots <name>',                        'show a space\'s snapshots'
+        group.command 'spaces:create_snapshot <name@snapshot_name>',            'take a space of a space.'
+        group.command 'spaces:delete_snapshot <name@snapshot_name>',         'remove a snapshot from a space'
       end
 
       group 'Plugins' do |group|
