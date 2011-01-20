@@ -9,7 +9,6 @@ module Strongspace::Command
       else
         display "=== #{strongspace.username} has #{spaces.size} space#{'s' if spaces.size > 1}"
         spaces.each do |space|
-          space = space["space"]
           display "#{space['name']} [type: #{space['type']}, snapshots: #{space['snapshots']}]"
         end
       end
@@ -41,7 +40,6 @@ module Strongspace::Command
       else
         display "=== Space #{args.first} has #{snapshots.size} snapshot#{'s' if snapshots.size > 1}"
         snapshots.each do |snapshot|
-          snapshot = snapshot["snapshot"]
           display "#{args.first}@#{snapshot['name']} [created: #{snapshot['created_at']}]"
         end
       end
