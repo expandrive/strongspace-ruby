@@ -58,8 +58,8 @@ module Strongspace::Command
         group.command 'spaces:create <name> [type]',        'add a new space. type => (normal,public,backup)'
         group.command 'spaces:delete <name> [type]',       'remove a space by and destroy its data'
         group.command 'spaces:snapshots <name>',                        'show a space\'s snapshots'
-        group.command 'spaces:create_snapshot <name@snapshot_name>',            'take a space of a space.'
-        group.command 'spaces:delete_snapshot <name@snapshot_name>',         'remove a snapshot from a space'
+        group.command 'spaces:create_snapshot <name> [snapshot_name]',        'take a space of a space - snapshot_name defaults to current date/time.'
+        group.command 'spaces:delete_snapshot <name> <snapshot_name>',         'remove a snapshot from a space'
       end
 
       group 'Plugins' do |group|
