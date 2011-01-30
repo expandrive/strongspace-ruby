@@ -29,7 +29,7 @@ module Strongspace::Command
       @credentials = [args.first, args[1]]
       r = Strongspace::Client.auth(@credentials[0], @credentials[1])
       if r
-        @credentials[0] = "#{@credentials[0]}/token"
+        @credentials[0] = r['username']
         @credentials[1] = r['api_token']
         write_credentials
         return true
@@ -92,7 +92,8 @@ module Strongspace::Command
       print "Password: "
       password = running_on_windows? ? ask_for_password_on_windows : ask_for_password
 
-      ["#{user}/token", Strongspace::Client.auth(user, password, host)['api_token']]
+      r = Strongspace::Client.auth(user, password, host)
+      [r['username'], r['api_token']]
     end
 
     def valid_saved_credentials?

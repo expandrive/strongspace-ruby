@@ -16,13 +16,13 @@ describe Strongspace::Client do
   end
 
   it "should return an API key hash for auth" do
-    api_token = { "api_key" => "abc" }
+    api_token = { "api_key" => "abc", "username" => "foo/token" }
     stub_request(:get, "https://foo:bar@www.strongspace.com/api/v1/api_token").to_return(:body => api_token.to_json)
     Strongspace::Client.auth("foo", "bar").should == api_token
   end
 
   it "should fail auth gracefully with a bad password" do
-    api_token = { "api_key" => "abc" }
+    api_token = { "api_key" => "abc", "username" => "foo/token" }
     stub_request(:get, "https://foo:bar@www.strongspace.com/api/v1/api_token").to_return(:body => api_token.to_json)
     lambda {Strongspace::Client.auth("foo", "ba3r")}.should raise_error(WebMock::NetConnectNotAllowedError)
   end
