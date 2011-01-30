@@ -2,7 +2,7 @@ module Strongspace::Command
   class Spaces < Base
     def list
       long = args.any? { |a| a == '--long' }
-      spaces = strongspace.spaces["spaces"]
+      spaces = strongspace.spaces
 
       if spaces.empty?
         display "#{strongspace.username} has no spaces"
@@ -33,7 +33,7 @@ module Strongspace::Command
         display "No space specified."
         return
       end
-      snapshots = strongspace.snapshots(args.first)["snapshots"]
+      snapshots = strongspace.snapshots(args.first)
 
       if snapshots.empty?
         display "Space #{args.first} has no snapshots"
