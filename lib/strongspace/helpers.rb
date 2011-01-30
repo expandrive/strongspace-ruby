@@ -5,32 +5,77 @@ module Strongspace
       self.class.name.split("::").last
     end
 
-    def home_directory
+    def self.home_directory
       running_on_windows? ? ENV['USERPROFILE'] : ENV['HOME']
+    end
+
+    def home_directory
+      return Strongspace::Helpers.home_directory
+    end
+
+    def self.support_directory
+      running_on_windows? ? "#{home_directory}/Strongspace" : "#{home_directory}/Library/Strongspace"
+    end
+
+    def support_directory
+      return Strongspace::Helpers.support_directory
+    end
+
+    def self.running_on_windows?
+      RUBY_PLATFORM =~ /mswin32|mingw32/
     end
 
     def running_on_windows?
       RUBY_PLATFORM =~ /mswin32|mingw32/
     end
 
+    def self.running_on_a_mac?
+      RUBY_PLATFORM =~ /-darwin\d/
+    end
+
     def running_on_a_mac?
       RUBY_PLATFORM =~ /-darwin\d/
     end
 
+    def gui_ssh_key
+      "#{credentials_folder}/#{hostname}.rsa"
+    end
+
+    def hostname
+      @hostname ||= `hostname`.strip
+
+      if @hostname.include?(".local")
+        @hostname = @hostname.split(".")[0]
+      end
+      return @hostname
+    end
+
+    def credentials_folder
+      "#{support_directory}/credentials"
+    end
+
     def pids_folder
-      "#{home_directory}/.strongspace/pids"
+      "#{support_directory}/pids"
     end
 
     def plugins_folder
       Strongspace::Plugin.directory
     end
 
+    def logs_folder
+      if running_on_a_mac?
+        "#{home_directory}/Library/Logs/Strongspace"
+      else
+        "#{support_directory}/logs"
+      end
+    end
+
     def bin_folder
-      "#{home_directory}/.strongspace/bin"
+      "#{support_directory}/bin"
     end
 
     def launchd_agents_folder
-      "#{home_directory}/Library/LaunchAgents"
+      "#{support_directory}/LaunchAgents"
     end
 
     def pid_file_path(name)
@@ -58,7 +103,8 @@ module Strongspace
       end
 
       begin
-        # This process is running
+        # This process is running, Kill 0 is a no-op that only works
+        # if the process exists
         Process.kill(0, existing_pid)
         return true
       rescue Errno::EPERM
@@ -165,24 +211,17 @@ module Strongspace
     end
 
     def space_exist?(name)
-      strongspace.spaces["spaces"].each do |space|
+      strongspace.spaces.each do |space|
         # TODO: clean up the json returned by the strongspace API requests to simplify this iteration
-        space = space["space"]
         return true if space["name"] == name
       end
       return false
     end
 
-    def valid_space_name?(name)
-      # For now, just make sure the space name is all "word characters," i.e. [0-9A-Za-z_]
-      return false if name =~ /\W/
-      return true
-    end
 
     def backup_space?(name)
       space = nil
-      strongspace.spaces["spaces"].each do |s|
-        s = s["space"]
+      strongspace.spaces.each do |s|
         if s["name"] == name then
           space = s
           break

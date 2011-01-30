@@ -1,9 +1,3 @@
-require 'strongspace/helpers'
-require 'strongspace/plugin'
-require 'strongspace/commands/base'
-
-Dir["#{File.dirname(__FILE__)}/commands/*.rb"].each { |c| require c }
-
 module Strongspace
   module Command
     class InvalidCommand < RuntimeError; end
@@ -21,7 +15,7 @@ module Strongspace
             raise InvalidCommand
           end
 
-          run_internal 'auth:reauthorize', args.dup if retries > 0
+          run_internal 'auth:reauthorize_interactve', args.dup if retries > 0
           run_internal(command, args.dup)
         rescue InvalidCommand
           error "Unknown command. Run 'strongspace help' for usage information."
@@ -30,7 +24,7 @@ module Strongspace
             STDERR.puts "Authentication failure"
             run(command, args, retries+1)
           else
-            error "Authentication failure"
+            error "! Authentication failure"
           end
         rescue RestClient::ResourceNotFound => e
           error extract_not_found(e.http_body)
@@ -46,6 +40,9 @@ module Strongspace
       end
 
       def run_internal(command, args, strongspace=nil)
+        if command == "web:start"
+          require 'strongspace-web'
+        end
         klass, method = parse(command)
         runner = klass.new(args, strongspace)
         raise InvalidCommand unless runner.respond_to?(method)
@@ -90,3 +87,4 @@ module Strongspace
     end
   end
 end
+

@@ -20,9 +20,32 @@ module Strongspace::Command
       ENV['STRONGSPACE_HOST'] || 'https://www.strongspace.com'
     end
 
-    def reauthorize
+    def reauthorize_interactve
       @credentials = ask_for_credentials
       write_credentials
+    end
+
+    def authorize!
+      @credentials = [args.first, args[1]]
+      r = Strongspace::Client.auth(@credentials[0], @credentials[1])
+      if r
+        @credentials[0] = "#{@credentials[0]}/token"
+        @credentials[1] = r['api_token']
+        write_credentials
+        return true
+      end
+
+      return false
+    end
+
+    def authenticated_login
+      if args.blank?
+        url = "#{host}/login/#{client.login_token['login_token']}"
+      else
+        to = URI.escape(args[0][0..1]) + URI.escape(URI.escape(args[0][2..-1])).gsub('&', '%26')
+        url = "#{host}/login/#{client.login_token['login_token']}?to=#{to}"
+      end
+      `open "#{url}"`
     end
 
     def user    # :nodoc:
@@ -36,7 +59,7 @@ module Strongspace::Command
     end
 
     def credentials_file
-      "#{home_directory}/.strongspace/credentials"
+      "#{credentials_folder}/credentials"
     end
 
     def get_credentials    # :nodoc:
@@ -70,6 +93,15 @@ module Strongspace::Command
       password = running_on_windows? ? ask_for_password_on_windows : ask_for_password
 
       ["#{user}/token", Strongspace::Client.auth(user, password, host)['api_token']]
+    end
+
+    def valid_saved_credentials?
+      if File.exists?(credentials_file)
+        credentials = read_credentials
+        r = Strongspace::Client.auth(credentials[0], credentials[1])
+        return !r.blank?
+      end
+      return false
     end
 
     def ask_for_password_on_windows
@@ -124,7 +156,12 @@ module Strongspace::Command
     end
 
     def write_credentials
-      FileUtils.mkdir_p(File.dirname(credentials_file))
+      begin
+        FileUtils.mkdir_p(credentials_folder)
+      rescue Errno::EEXIST => e
+
+      end
+
       File.open(credentials_file, 'w') do |f|
         f.puts self.credentials
       end

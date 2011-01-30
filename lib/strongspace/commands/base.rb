@@ -1,7 +1,3 @@
-require 'fileutils'
-require 'strongspace/plugin_interface'
-
-
 module Strongspace::Command
   class Base
     include Strongspace::Helpers

@@ -1,5 +1,3 @@
-# based on the Rails Plugin
-
 module Strongspace
   class Plugin
     class << self
@@ -9,7 +7,7 @@ module Strongspace
     attr_reader :name, :uri
 
     def self.directory
-      File.expand_path("#{home_directory}/.strongspace/plugins")
+      File.expand_path("#{support_directory}/plugins")
     end
 
     def self.list
@@ -19,12 +17,21 @@ module Strongspace
     end
 
     def self.load!
+      self.update_support_directory!
       list.each do |plugin|
         begin
           load_plugin(plugin)
         rescue Exception => e
           display "Unable to load plugin: #{plugin}: #{e.message}"
         end
+      end
+      self.load_default_gem_plugins
+    end
+
+    def self.load_default_gem_plugins
+      begin
+        require 'strongspace-rsync'
+      rescue Exception => e
       end
     end
 
@@ -38,6 +45,15 @@ module Strongspace
       FileUtils.rm_rf("#{self.directory}/#{plugin}")
     end
 
+    def self.update_support_directory!
+      if running_on_a_mac?
+        # if File.exist?("#{home_directory}/.strongspace") and !File.exist?("#{support_directory}")
+        #   FileUtils.mv("#{home_directory}/.strongspace", "#{support_directory}")
+        # end
+
+        FileUtils.mkdir_p(launchd_agents_folder) unless File.exist? launchd_agents_folder
+      end
+    end
 
     def initialize(uri)
       @uri = uri

@@ -1,8 +1,3 @@
-require 'rest_client'
-require 'uri'
-require 'strongspace/version'
-require 'json/pure' unless {}.respond_to?(:to_json)
-
 # A Ruby class to call the Strongspace REST API.  You might use this if you want to
 # manage your Strongspace apps from within a Ruby program, such as Capistrano.
 #
@@ -23,12 +18,24 @@ class Strongspace::Client
   attr_accessor :host, :user, :password
 
   def self.auth(user, password, host='https://www.strongspace.com')
-    client = new(user, password, host)
-    JSON.parse client.get('/api/v1/api_token', :username => user, :password => password).to_s
+    begin
+      client = new(user, password, host)
+      return JSON.parse client.get('/api/v1/api_token', :username => user, :password => password).to_s
+    rescue RestClient::Request::Unauthorized => e
+      raise Strongspace::Exceptions::InvalidCredentials
+    rescue SocketError => e
+      raise Strongspace::Exceptions::NoConnection
+    end
   end
 
   def username
+    return nil if !user
+
     self.user.split("/")[0]
+  end
+
+  def login_token
+    doc = JSON.parse get('/api/v1/login_token')
   end
 
   def initialize(user, password, host='https://www.strongspace.com')
