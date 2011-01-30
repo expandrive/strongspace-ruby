@@ -21,13 +21,15 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "autotest-growl"
   gem.add_development_dependency "autotest-fsevent"
   gem.add_development_dependency "rspec",   "~> 1.3.0"
-  gem.add_development_dependency "taps",    "~> 0.3.11"
   gem.add_development_dependency "webmock", "~> 1.5.0"
-  gem.add_development_dependency "open4"
   gem.add_development_dependency "ruby-fsevent"
+
+
+  gem.add_development_dependency "sinatra"
+  gem.add_development_dependency "sinatra-reloader"
 
   gem.add_dependency "open4"
   gem.add_dependency "cronedit"
-  gem.add_dependency "rest-client", "< 1.7.0"
+  gem.add_dependency "rest-client", "1.6.1"
   gem.add_dependency "json_pure",   "< 1.5.0"
 end
