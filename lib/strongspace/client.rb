@@ -73,6 +73,7 @@ class Strongspace::Client
 
   def snapshots(space_name)
     doc = JSON.parse get("/api/v1/spaces/#{escape(space_name)}/snapshots").to_s
+    doc["snapshots"]
   end
 
   def delete_snapshot(space_name, snapshot_name)
@@ -87,6 +88,7 @@ class Strongspace::Client
   # Get the list of ssh public keys for the current user.
   def keys
     doc = JSON.parse get('/api/v1/ssh_keys')
+    doc["ssh_keys"]
   end
 
   # Add an ssh public key to the current user.
