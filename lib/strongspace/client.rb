@@ -64,6 +64,7 @@ class Strongspace::Client
 
   def spaces
     doc = JSON.parse get('/api/v1/spaces')
+    doc["spaces"]
   end
 
   def delete_space(space_name)
