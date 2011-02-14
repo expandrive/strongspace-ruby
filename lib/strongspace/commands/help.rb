@@ -37,6 +37,7 @@ module Strongspace::Command
         group.command 'download <remote_path>',      'download a file from Strongspace to the current directory'
         group.command 'mkdir <remote_path>',      'create a folder on Strongspace'
         group.command 'delete <remote_path>',      'delete a file or recursively delete a folder on Strongspace'
+        group.command 'quota',      'Show the filesystem quota information'
       end
 
       group 'SSH Keys' do |group|
