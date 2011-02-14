@@ -16,5 +16,9 @@ if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
 end
 
 gem 'strongspace', version
-load 'strongspace'
 
+begin
+  load Gem.bin_path('strongspace', 'strongspace', version)
+rescue
+  load 'strongspace'
+end
