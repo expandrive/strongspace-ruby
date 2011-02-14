@@ -38,20 +38,36 @@ module Strongspace
     end
 
     def gui_ssh_key
-      "#{credentials_folder}/#{hostname}.rsa"
+      "#{credentials_folder}/#{computername}.rsa"
     end
 
-    def hostname
-      @hostname ||= `hostname`.strip
+    def computername
+      n = File.read(credentials_file).split("\n")[2]
 
-      if @hostname.include?(".local")
-        @hostname = @hostname.split(".")[0]
+      if n.blank?
+        @computername ||= `system_profiler  SPSoftwareDataType | grep "Computer Name"`.split(":").last.gsub(/[[:punct:][:cntrl:]]/, '')
+
+        if @computername.include?(".local")
+          @computername = @computername.split(".")[0]
+        end
+
+        File.open(credentials_file, 'a') do |f|
+          f.puts @computername
+        end
+
+      else
+        @computername = n.strip
       end
-      return @hostname
+
+      return @computername
     end
 
     def credentials_folder
       "#{support_directory}/credentials"
+    end
+
+    def credentials_file
+      "#{credentials_folder}/credentials"
     end
 
     def pids_folder
@@ -95,6 +111,34 @@ module Strongspace
       return nil
     end
 
+    def kill_via_pidfile(name)
+      existing_pid = pid_from_pid_file(name)
+
+      if not existing_pid
+        return false
+      end
+
+      begin
+        # This process is running, Kill 0 is a no-op that only works
+        # if the process exists
+        Process.kill(9, existing_pid)
+        return true
+      rescue Errno::EPERM
+        error "No longer have permissions to check this PID"
+        return
+      rescue Errno::ESRCH
+        # Cleanup orphaned pid file and continue on as normal
+        File.unlink(pid_file_path(name))
+        return
+      rescue
+        error "Unable to determine status for #{existing_pid} : #{$!}"
+        return
+      end
+
+      File.unlink(pid_file_path(name))
+      return false
+    end
+
     def process_running?(name)
       existing_pid = pid_from_pid_file(name)
 
@@ -117,7 +161,7 @@ module Strongspace
       end
 
       return false
-      end
+    end
 
     def create_pid_file(name, pid)
 
@@ -143,6 +187,9 @@ module Strongspace
     end
 
     def display(msg, newline=true)
+      if ENV["STRONGSPACE_DISPLAY"] == "silent"
+        return
+      end
       if newline
         puts(msg)
       else
