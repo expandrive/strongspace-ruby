@@ -19,8 +19,15 @@ module Strongspace
           run_internal(command, args.dup)
         rescue InvalidCommand
           error "Unknown command. Run 'strongspace help' for usage information."
+        rescue Strongspace::Exceptions::InvalidCredentials
+          if retries < 1
+            STDERR.puts "Authentication failure"
+            run(command, args, retries+1)
+          else
+            error "! Authentication failure"
+          end
         rescue RestClient::Unauthorized
-          if retries < 3
+          if retries < 1
             STDERR.puts "Authentication failure"
             run(command, args, retries+1)
           else
