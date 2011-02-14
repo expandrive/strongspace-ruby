@@ -27,7 +27,7 @@ module Strongspace::Command
 
     def authorize!
       @credentials = [args.first, args[1]]
-      r = Strongspace::Client.auth(@credentials[0], @credentials[1])
+      r = Strongspace::Client.auth(@credentials[0], @credentials[1], host)
       if r
         @credentials[0] = r['username']
         @credentials[1] = r['api_token']
@@ -58,10 +58,6 @@ module Strongspace::Command
       @credentials[1]
     end
 
-    def credentials_file
-      "#{credentials_folder}/credentials"
-    end
-
     def get_credentials    # :nodoc:
       return if @credentials
       unless @credentials = read_credentials
@@ -84,6 +80,10 @@ module Strongspace::Command
     end
 
     def ask_for_credentials
+      if ENV["STRONGSPACE_DISPLAY"] == "silent"
+        return [nil, nil]
+      end
+
       puts "Enter your Strongspace credentials."
 
       print "Username or Email: "
@@ -99,7 +99,7 @@ module Strongspace::Command
     def valid_saved_credentials?
       if File.exists?(credentials_file)
         credentials = read_credentials
-        r = Strongspace::Client.auth(credentials[0], credentials[1])
+        r = Strongspace::Client.auth(credentials[0], credentials[1], host)
         return !r.blank?
       end
       return false
@@ -132,6 +132,13 @@ module Strongspace::Command
     end
 
     def save_credentials
+
+      if args[0] and args[1]
+        @credentials = []
+        @credentials[0] = args[0]
+        @credentials[1] = args[1]
+      end
+
       begin
         write_credentials
         command = 'auth:check'

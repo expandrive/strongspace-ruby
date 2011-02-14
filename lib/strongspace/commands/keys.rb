@@ -30,9 +30,9 @@ module Strongspace::Command
       end
 
 
-      if !File.exist? "#{credentials_folder}/#{hostname}.rsa"
-        `/usr/bin/ssh-keygen -f #{credentials_folder}/#{hostname}.rsa -b 2048 -C \" Strongspace App - #{hostname}\" -q -N ""` unless File.exist? "#{credentials_folder}/#{hostname}.rsa"
-        args[0] = "#{credentials_folder}/#{hostname}.rsa.pub"
+      if !File.exist? "#{credentials_folder}/#{computername}.rsa"
+        `/usr/bin/ssh-keygen -f \"#{credentials_folder}/#{computername}.rsa\" -b 2048 -C \" Strongspace App - #{computername}\" -q -N ""` unless File.exist? "#{credentials_folder}/#{computername}.rsa"
+        args[0] = "#{credentials_folder}/#{computername}.rsa.pub"
         begin
           add
         rescue RestClient::Conflict => e # Swallow errors if the key already exists on Strongspace
@@ -62,7 +62,7 @@ module Strongspace::Command
     def valid_key_gui?
       return unless running_on_a_mac? and File.exist? "#{support_directory}/ssh"
 
-      ret = `ssh -o PreferredAuthentications=publickey -i "#{support_directory}/ssh/#{hostname}.rsa" #{strongspace.username}@#{strongspace.username}.strongspace.com 2>&1`
+      ret = `ssh -o PreferredAuthentications=publickey -i "#{support_directory}/ssh/#{computername}.rsa" #{strongspace.username}@#{strongspace.username}.strongspace.com 2>&1`
 
       if ret.include? "Strongspace"
         display "Valid key installed"
