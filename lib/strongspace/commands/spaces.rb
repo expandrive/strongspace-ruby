@@ -63,7 +63,7 @@ module Strongspace::Command
       while (!success and (retries < 5)) do
         begin
           create_snapshot
-          thin_snapshots
+          #thin_snapshots
         rescue SocketError => e
           sleep(10)
           retries = retries + 1
@@ -86,17 +86,11 @@ module Strongspace::Command
 
       keeplist = []
 
-      if snapshots.count < 24
-        return
-      end
-
       snapshots.each do |s|
-
-        if Time.parse(s['created_at']) > (Time.now - 3600*24)
+        if DateTime.parse(s['created_at']).to_local_time > (Time.now - 3600*24)
           keeplist << s
           next
         end
-
       end
 
       (snapshots - keeplist).each do |k|
@@ -141,6 +135,8 @@ module Strongspace::Command
         <string>#{log_file}</string>
         <key>EnvironmentVariables</key>
         <dict>
+        <key>STRONGSPACE_DISPLAY</key>
+        <string>logging</string>
         <key>GEM_PATH</key>
         <string>#{support_directory}/gems</string>
         <key>GEM_HOME</key>
@@ -187,7 +183,6 @@ module Strongspace::Command
         CronEdit::Crontab.Remove "strongspace-snapshots-#{space_name}"
       end
 
-      display "Unscheduled snapshotting of #{space_name}"
     end
 
 
@@ -202,3 +197,4 @@ module Strongspace::Command
 
   end
 end
+
