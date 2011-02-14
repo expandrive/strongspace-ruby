@@ -55,4 +55,26 @@ module Strongspace::Command
     end
   end
 
+  class Quota < Base
+    def index
+
+      f = strongspace.filesystem
+      display "#{strongspace.username}:"
+      display "       Quota: #{f["quota_gib"]} GiB"
+      display "        Used: #{f["used_gib"]} GiB"
+      display "   Available: #{f["avail_gib"]} GiB"
+    end
+  end
+
+  class Size < Base
+    def index
+      if args.length != 1
+        error "please supply a remote path"
+      end
+
+      r = strongspace.size(args[0])
+      puts r
+    end
+  end
+
 end

@@ -62,6 +62,10 @@ class Strongspace::Client
     doc = delete("/api/v1/files/#{escape(path[1..-1])}")
   end
 
+  def size(path)
+    doc = JSON.parse get("/api/v1/files/#{escape(path[1..-1])}?op=size")
+  end
+
   def spaces
     doc = JSON.parse get('/api/v1/spaces')
     doc["spaces"]
@@ -92,6 +96,10 @@ class Strongspace::Client
     doc = JSON.parse post("/api/v1/spaces/#{escape(space_name)}/snapshots", :name => snapshot_name)
   end
 
+  def filesystem
+    doc = JSON.parse get("/api/v1/filesystem").to_s
+    doc["filesystem"]
+  end
 
   # Get the list of ssh public keys for the current user.
   def keys
