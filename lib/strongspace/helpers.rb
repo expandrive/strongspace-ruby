@@ -45,10 +45,11 @@ module Strongspace
       n = File.read(credentials_file).split("\n")[2]
 
       if n.blank?
-        @computername ||= `system_profiler  SPSoftwareDataType | grep "Computer Name"`.split(":").last.gsub(/[[:punct:][:cntrl:]]/, '')
+        @computername ||= `system_profiler  SPSoftwareDataType | grep "Computer Name"`.split(":").last.nice_slug
 
-        if @computername.include?(".local")
-          @computername = @computername.split(".")[0]
+
+        if @computername.length < 3
+          @computername = ENV['USER'].nice_slug
         end
 
         File.open(credentials_file, 'a') do |f|
@@ -330,6 +331,36 @@ unless String.method_defined?(:underscore)
   class String
     def underscore
       self.gsub(/::/, '/').gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').gsub(/([a-z\d])([A-Z])/,'\1_\2').tr("-", "_").downcase
+    end
+  end
+end
+
+unless String.method_defined?(:nice_slug)
+  class String
+    def nice_slug
+      str = self.dup
+      accents = {
+      ['á','à','â','ä','ã'] => 'a',
+      ['Ã','Ä','Â','À','Á'] => 'A',
+      ['é','è','ê','ë'] => 'e',
+      ['Ë','É','È','Ê'] => 'E',
+      ['í','ì','î','ï'] => 'i',
+      ['Í','Î','Ì','Ï'] => 'I',
+      ['ó','ò','ô','ö','õ'] => 'o',
+      ['Õ','Ö','Ô','Ò','Ó'] => 'O',
+      ['ú','ù','û','ü'] => 'u',
+      ['Ú','Û','Ù','Ü'] => 'U',
+      ['ç'] => 'c', ['Ç'] => 'C',
+      ['ñ'] => 'n', ['Ñ'] => 'N'
+      }
+      accents.each do |ac,rep|
+        ac.each do |s|
+          str = str.gsub(s, rep)
+        end
+      end
+      str = str.gsub(/[^a-zA-Z0-9\. ]/,"")
+      str = str.gsub(/[ ]+/," ")
+      str = str.gsub(/[_]/,"-")
     end
   end
 end
