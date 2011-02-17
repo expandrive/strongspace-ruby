@@ -14,7 +14,7 @@ module Strongspace
     end
 
     def self.support_directory
-      running_on_windows? ? "#{home_directory}/Strongspace" : "#{home_directory}/Library/Strongspace"
+      running_on_windows? ? "#{home_directory}\\Strongspace" : "#{home_directory}/Library/Strongspace"
     end
 
     def support_directory
