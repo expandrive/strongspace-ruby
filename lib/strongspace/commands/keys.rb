@@ -25,7 +25,7 @@ module Strongspace::Command
 
 
       File.open("#{credentials_folder}/known_hosts", "w") do |f|
-        f.write "*.strongspace.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArXBYAoHZWVzLfHNMlgteAbq20AaCVcE1qALqVjYZerIpa3rBjNlv2i/2O8ul3OmSfcQwQGPTnABLqz9cozAbxF01eDfqUiSABUDT6m1/lY1a0V7RGS46Y/KJMVbOb4mVpxDZOVwBQh/DYTu7R55vFc93lXpE+tZboqnuq+LvJIZDqzoGTHIUprRs3sNY8Xegnz+m68P+tV6iLkXMRk8Gh8/IIavN4mXYhWPVbCv6Gqo2XhiYVMrCqLZFKLG0W6uwWY/xOhUjWxKDZMlqhyU/YUsMB5BZc9/x0t+Sc82OL+Eh3IB5EUmmCWnhm/LKxjMIn2UNe48BQqwaU/gozVtVPQ==\n"
+        f.write "* ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArXBYAoHZWVzLfHNMlgteAbq20AaCVcE1qALqVjYZerIpa3rBjNlv2i/2O8ul3OmSfcQwQGPTnABLqz9cozAbxF01eDfqUiSABUDT6m1/lY1a0V7RGS46Y/KJMVbOb4mVpxDZOVwBQh/DYTu7R55vFc93lXpE+tZboqnuq+LvJIZDqzoGTHIUprRs3sNY8Xegnz+m68P+tV6iLkXMRk8Gh8/IIavN4mXYhWPVbCv6Gqo2XhiYVMrCqLZFKLG0W6uwWY/xOhUjWxKDZMlqhyU/YUsMB5BZc9/x0t+Sc82OL+Eh3IB5EUmmCWnhm/LKxjMIn2UNe48BQqwaU/gozVtVPQ==\n"
       end
 
 
