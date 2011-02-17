@@ -364,3 +364,22 @@ unless String.method_defined?(:nice_slug)
     end
   end
 end
+
+unless String.method_defined?(:to_cygpath)
+  class String
+    def to_cygpath
+      return self unless Strongspace::Command::running_on_windows?
+      r = "/cygdrive/#{self[0..0].downcase}/#{self[3..-1]}".gsub("\\", "/")
+      return r
+    end
+  end
+end
+
+unless String.method_defined?(:normalize_pathslash)
+  class String
+    def normalize_pathslash
+      return self.gsub("/", "\\") if Strongspace::Command::running_on_windows?
+      return self
+    end
+  end
+end
