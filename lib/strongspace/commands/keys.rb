@@ -21,7 +21,6 @@ module Strongspace::Command
     end
 
     def generate_for_gui
-      return unless running_on_a_mac?
       FileUtils.mkdir "#{credentials_folder}" unless File.exist? "#{credentials_folder}"
 
 
@@ -31,7 +30,7 @@ module Strongspace::Command
 
 
       if !File.exist? "#{credentials_folder}/#{computername}.rsa"
-        `/usr/bin/ssh-keygen -f \"#{credentials_folder}/#{computername}.rsa\" -b 2048 -C \" Strongspace App - #{computername}\" -q -N ""` unless File.exist? "#{credentials_folder}/#{computername}.rsa"
+        `#{ssh_keygen_binary} -f \"#{credentials_folder}/#{computername}.rsa\" -b 2048 -C \" Strongspace App - #{computername}\" -q -N ""` unless File.exist? "#{credentials_folder}/#{computername}.rsa"
         args[0] = "#{credentials_folder}/#{computername}.rsa.pub"
         begin
           add
