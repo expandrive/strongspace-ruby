@@ -41,6 +41,18 @@ module Strongspace
       "#{credentials_folder}/#{computername}.rsa"
     end
 
+    def ssh_keygen_binary
+      return "/usr/bin/ssh-keygen" if running_on_a_mac?
+      return "#{support_directory}/bin/ssh-keygen.exe" if running_on_windows?
+      return "ssh-keygen"
+    end
+
+    def ssh_binary
+      return "/usr/bin/ssh" if running_on_a_mac?
+      return "#{support_directory}/bin/ssh.exe".to_cygpath if running_on_windows?
+      return "ssh"
+    end
+
     def computername
       n = File.read(credentials_file).split("\n")[2]
 
