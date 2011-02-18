@@ -6,7 +6,7 @@ module Strongspace
     end
 
     def self.home_directory
-      running_on_windows? ? ENV['USERPROFILE'] : ENV['HOME']
+      running_on_windows? ? ENV['APPDATA'] : ENV['HOME']
     end
 
     def home_directory
