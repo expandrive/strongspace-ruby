@@ -108,7 +108,7 @@ module Strongspace
       "#{support_directory}/bin"
     end
 
-    def launchd_agents_folder
+    def launch_files_folder
       "#{support_directory}/LaunchAgents"
     end
 

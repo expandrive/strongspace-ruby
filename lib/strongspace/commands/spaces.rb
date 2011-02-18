@@ -148,11 +148,11 @@ module Strongspace::Command
         </dict>
         </plist>"
 
-        file = File.new(launchd_plist_file(space_name), "w+")
+        file = File.new(scheduled_launch_file(space_name), "w+")
         file.puts plist
         file.close
 
-        r = `launchctl load -S aqua '#{launchd_plist_file(space_name)}'`
+        r = `launchctl load -S aqua '#{scheduled_launch_file(space_name)}'`
         if r.strip.ends_with?("Already loaded")
           error "This task is aready scheduled, unload before scheduling again"
           return
@@ -175,9 +175,9 @@ module Strongspace::Command
       end
 
       if running_on_a_mac?
-        if File.exist? launchd_plist_file(space_name)
-          `launchctl unload '#{launchd_plist_file(space_name)}'`
-          FileUtils.rm(launchd_plist_file(space_name))
+        if File.exist? scheduled_launch_file(space_name)
+          `launchctl unload '#{scheduled_launch_file(space_name)}'`
+          FileUtils.rm(scheduled_launch_file(space_name))
         end
       else  # Assume we're running on linux/unix
         CronEdit::Crontab.Remove "strongspace-snapshots-#{space_name}"
@@ -187,7 +187,7 @@ module Strongspace::Command
 
 
     private
-    def launchd_plist_file(space_name)
+    def scheduled_launch_file(space_name)
       "#{launchd_agents_folder}/com.strongspace.Snapshots.#{space_name}.plist"
     end
 
