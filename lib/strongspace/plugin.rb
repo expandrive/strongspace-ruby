@@ -31,8 +31,19 @@ module Strongspace
     def self.load_default_gem_plugins
       begin
         require File.dirname(__FILE__) + '/../../../strongspace-rsync/lib/strongspace-rsync'
-        require 'strongspace-rsync'
       rescue Exception => e
+        begin
+          require 'strongspace-rsync'
+        rescue Exception => e
+        end
+      end
+      begin
+        require File.dirname(__FILE__) + '/../../../strongspace-web/lib/strongspace-web'
+      rescue Exception => e
+        begin
+          require 'strongspace-web'
+        rescue Exception => ee
+        end
       end
     end
 
