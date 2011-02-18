@@ -45,7 +45,14 @@ module Strongspace::Command
         to = URI.escape(args[0][0..1]) + URI.escape(URI.escape(args[0][2..-1])).gsub('&', '%26')
         url = "#{host}/login/#{client.login_token['login_token']}?to=#{to}"
       end
-      `open "#{url}"`
+      if running_on_a_mac?
+        `open "#{url}"`
+      elsif running_on_windows?
+        require 'win32ole'
+        shell = WIN32OLE.new('Shell.Application')
+        shell.shellExecute(url, '', '', 'open', 3)
+      end
+
     end
 
     def user    # :nodoc:
