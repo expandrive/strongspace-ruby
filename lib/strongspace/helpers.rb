@@ -392,6 +392,17 @@ unless String.method_defined?(:to_cygpath)
   end
 end
 
+unless String.method_defined?(:from_cygpath)
+  class String
+    def from_cygpath
+      if self.starts_with? "/cygdrive" and Strongspace::Command::running_on_windows?
+        return "#{self[10..10]}:\\#{self[12..-1].gsub("/","\\")}"
+      end
+      return self
+    end
+  end
+end
+
 unless String.method_defined?(:normalize_pathslash)
   class String
     def normalize_pathslash
